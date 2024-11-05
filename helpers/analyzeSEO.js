@@ -20,10 +20,34 @@ function analyzeSEO(html, url) {
     suggestions.metaDescription = 'Meta description should be between 50 and 160 characters.';
   }
 
+  // Check for canonical tag
+  const canonical = $('link[rel="canonical"]').attr('href');
+  if (!canonical) {
+    suggestions.canonical = 'Missing canonical tag. Add a canonical link to prevent duplicate content issues.';
+  }
+
+  // Check for viewport meta tag
+  const viewport = $('meta[name="viewport"]').attr('content');
+  if (!viewport) {
+    suggestions.viewport = 'Missing viewport meta tag. Add this tag for mobile responsiveness.';
+  }
+
+  // Check for structured data
+  const structuredData = $('script[type="application/ld+json"]').html();
+  if (!structuredData) {
+    suggestions.structuredData = 'Missing structured data. Consider adding JSON-LD or microdata for rich snippets.';
+  }
+
   // Check for H1 tag
   const h1 = $('h1').first().text();
   if (!h1) {
     suggestions.h1 = 'Missing H1 tag. Add a primary heading (H1) to the page.';
+  }
+
+  // Check for additional headings (H2 - H6)
+  const h2 = $('h2').length;
+  if (h2 < 1) {
+    suggestions.headings = 'Consider adding H2 or more detailed headings for better content structure.';
   }
 
   // Check for alt attributes in images
@@ -40,6 +64,19 @@ function analyzeSEO(html, url) {
   }
   if (externalLinks < 2) {
     suggestions.externalLinks = 'Consider adding more external links to reputable sites.';
+  }
+
+  // Check Open Graph tags
+  const ogTitle = $('meta[property="og:title"]').attr('content');
+  if (!ogTitle) {
+    suggestions.ogTags = 'Missing Open Graph tags. Consider adding them for social sharing.';
+  }
+
+  // Check for sufficient content word count
+  const textContent = $('body').text();
+  const wordCount = textContent.split(/\s+/).length;
+  if (wordCount < 300) {
+    suggestions.wordCount = 'Content is too short. Aim for at least 300 words for better SEO.';
   }
 
   return suggestions;
